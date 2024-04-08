@@ -1,0 +1,6 @@
+sqlalchemy
+python-decouple
+# PostgreSQL 数据库适配器
+psycopg2-binary
+sqlacodegen-v2==0.1.4
+pandas

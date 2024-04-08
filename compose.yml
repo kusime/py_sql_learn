@@ -1,0 +1,22 @@
+version: '3.2'
+services:
+  loyaer_db:
+    image: postgres:15
+    container_name: loyaer_db
+
+    # db connection is in container network connect
+    ports:
+      - "6666:5432"
+    
+    volumes:
+      - ./volumes/postgres/database:/var/lib/postgresql/data
+      - ./volumes/postgres/init_database:/docker-entrypoint-initdb.d/
+    env_file:
+      - '.env'
+    networks:
+      - backend_network
+
+
+networks:
+  backend_network:
+    driver: bridge
