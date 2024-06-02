@@ -1,25 +1,22 @@
 from typing import List
 from typing import Optional
-from sqlalchemy import ForeignKey
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy import String
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
+from sqlalchemy.ext.declarative import declarative_base
 
-class Base(DeclarativeBase):
-    pass
-
-
-metadata = Base.metadata
+Base = declarative_base()
 
 
 class User(Base):
     __tablename__ = "user_account"
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(30))
-    fullname: Mapped[Optional[str]]
+    fullname = Column(String(16), index=True)
     addresses: Mapped[List["Address"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
@@ -31,7 +28,7 @@ class User(Base):
 class Address(Base):
     __tablename__ = "address"
     id: Mapped[int] = mapped_column(primary_key=True)
-    email_address: Mapped[str]
+    email_address = Column(String(16), index=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("user_account.id"))
     user: Mapped["User"] = relationship(back_populates="addresses")
 

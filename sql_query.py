@@ -8,7 +8,8 @@ POSTGRES_PASSWORD = config("POSTGRES_PASSWORD")
 APP_DATABASE = config("APP_DATABASE")
 DB_HOST = "localhost:6666"
 
-db_url = f"postgresql://postgres:{POSTGRES_PASSWORD}@{DB_HOST}/{APP_DATABASE}"
+# db_url = f"postgresql://postgres:{POSTGRES_PASSWORD}@{DB_HOST}/{APP_DATABASE}"
+db_url = f"mysql+pymysql://admin:admin123#@localhost:3306/local_loyaltyprogram?charset=utf8mb4"
 
 
 print(db_url)
@@ -67,33 +68,33 @@ if CREATE:
 
 # raw
 # begin will automatically create a new connection
-from sqlalchemy.sql import text
+# from sqlalchemy.sql import text
 
-with Session() as session:
-    result = session.execute(text("SHOW TRANSACTION ISOLATION LEVEL;"))
-    for row in result:
-        print(row[0])
+# with Session() as session:
+#     result = session.execute(text("SHOW TRANSACTION ISOLATION LEVEL;"))
+#     for row in result:
+#         print(row[0])
 
-from models import Address, User
-from sqlalchemy.sql.expression import func
-import pandas as pd
+# from models import Address, User
+# from sqlalchemy.sql.expression import func
+# import pandas as pd
 
-# write
-with Session() as session:
-    # query for ``User`` objects
-    stmt = select(User.name, User.fullname).order_by(func.random()).limit(10)
+# # write
+# with Session() as session:
+#     # query for ``User`` objects
+#     stmt = select(User.name, User.fullname).order_by(func.random()).limit(10)
 
-    res = pd.read_sql(stmt, session.bind)
-    res.to_csv("users.csv", index=False)
+#     res = pd.read_sql(stmt, session.bind)
+#     res.to_csv("users.csv", index=False)
 
 # read
-with Session() as session:
-    # https://stackoverflow.com/questions/70422598/obtain-list-of-ids-inserted-from-pandas-to-sql-function
-    # query for ``User`` objects
-    content = pd.read_csv("users.csv")
-    table_name = "user_account"
+# with Session() as session:
+#     # https://stackoverflow.com/questions/70422598/obtain-list-of-ids-inserted-from-pandas-to-sql-function
+#     # query for ``User`` objects
+#     content = pd.read_csv("users.csv")
+#     table_name = "user_account"
 
-    # auto commnit here
-    ret = content.to_sql(table_name, session.bind, if_exists="append", index=False)
-    # https://github.com/pandas-dev/pandas/issues/23998
-    print(ret)
+#     # auto commnit here
+#     ret = content.to_sql(table_name, session.bind, if_exists="append", index=False)
+#     # https://github.com/pandas-dev/pandas/issues/23998
+#     print(ret)

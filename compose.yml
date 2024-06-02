@@ -1,22 +1,30 @@
-version: '3.2'
+version: "3.8"
 services:
-  loyaer_db:
-    image: postgres:15
-    container_name: loyaer_db
-
-    # db connection is in container network connect
+  db:
+    container_name: test-db-server
+    image: mysql
+    # command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: local_loyaltyprogram
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin123#
+      MYSQL_ROOT_PASSWORD: rootpassword
     ports:
-      - "6666:5432"
-    
+          - 3306:3306
     volumes:
-      - ./volumes/postgres/database:/var/lib/postgresql/data
-      - ./volumes/postgres/init_database:/docker-entrypoint-initdb.d/
-    env_file:
-      - '.env'
+      - ./volumes/mysql:/var/lib/mysql/
     networks:
-      - backend_network
+      test-network:
 
-
+  adminer:
+    container_name: test-adminer
+    image: adminer
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8892:8080
+    networks:
+      test-network:
 networks:
-  backend_network:
-    driver: bridge
+  test-network:

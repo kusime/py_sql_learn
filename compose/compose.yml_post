@@ -1,0 +1,45 @@
+version: '3.2'
+services:
+  loyaer_db:
+    image: postgres:15
+    container_name: loyaer_db
+
+    # db connection is in container network connect
+    ports:
+      - "6666:5432"
+    
+    volumes:
+      - ./volumes/postgres/database:/var/lib/postgresql/data
+      - ./volumes/postgres/init_database:/docker-entrypoint-initdb.d/
+    env_file:
+      - '.env'
+    networks:
+      db_network:
+        ipv4_address: '10.1.0.100'
+    command: ["postgres", "-c","wal_level=logical"]
+
+  loyaer_db2:
+    image: postgres:15
+    container_name: loyaer_db2
+
+    # db connection is in container network connect
+    ports:
+      - "6667:5432"
+    
+    volumes:
+      - ./volumes/postgres/database_1:/var/lib/postgresql/data
+      - ./volumes/postgres/init_database:/docker-entrypoint-initdb.d/
+    env_file:
+      - '.env'
+    networks:
+      db_network:
+        ipv4_address: '10.1.0.101'
+
+    command: ["postgres", "-c","wal_level=logical"]
+
+networks:
+  db_network:
+    driver: bridge
+    ipam:
+      config:
+        -   subnet: 10.1.0.0/24
