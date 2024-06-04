@@ -1,8 +1,14 @@
 # DB config
-
-
 import time
 from decouple import config
+
+# CONNECT
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import sessionmaker
+
+# the base level of sqlalchemy
+from contextlib import contextmanager
+from models import Address, User
 
 POSTGRES_PASSWORD = config("POSTGRES_PASSWORD")
 APP_DATABASE = config("APP_DATABASE")
@@ -12,23 +18,12 @@ DB_HOST = "localhost:6666"
 db_url = f"mysql+pymysql://admin:admin123#@localhost:3306/local_loyaltyprogram?charset=utf8mb4"
 
 
+# 1. commit() ?
+# 2.
+
 print(db_url)
-
-
-# CONNECT
-
-from sqlalchemy import create_engine, select
-
-from sqlalchemy.orm import sessionmaker
-
-# the base level of sqlalchemy
 engine = create_engine(db_url)
-
-
 Session = sessionmaker(autoflush=False, autocommit=False, bind=engine)
-
-from contextlib import contextmanager
-
 
 # @contextmanager
 # def get_db() -> Iterator[Session]:
@@ -40,30 +35,28 @@ from contextlib import contextmanager
 #         db.close()
 
 
-from models import Address, User
-
 # Base.metadata.create_all(engine)
-CREATE = False
-if CREATE:
-    with Session.begin() as session:
-        # create Atom operation
-        spongebob = User(
-            name="spongebob",
-            fullname="Spongebob Squarepants",
-            addresses=[Address(email_address="spongebob@sqlalchemy.org")],
-        )
-        sandy = User(
-            name="sandy",
-            fullname="Sandy Cheeks",
-            addresses=[
-                Address(email_address="sandy@sqlalchemy.org"),
-                Address(email_address="sandy@squirrelpower.org"),
-            ],
-        )
-        patrick = User(name="patrick", fullname="Patrick Star")
-        session.add_all([spongebob, sandy, patrick])
-        # any exception before commnit will rollback the session
-        # session.commit()
+# CREATE = True
+# if CREATE:
+#     with Session.begin() as session:
+#         # create Atom operation
+#         spongebob = User(
+#             name="spongebob",
+#             fullname="Sponge",
+#             addresses=[Address(email_address="spongebob@")],
+#         )
+#         sandy = User(
+#             name="sandy",
+#             fullname="Sandy Cheeks",
+#             addresses=[
+#                 Address(email_address="sandy@sqlal"),
+#                 Address(email_address="sandy@squirre"),
+#             ],
+#         )
+#         patrick = User(name="patrick", fullname="Patrick Star")
+#         session.add_all([spongebob, sandy, patrick])
+# any exception before commnit will rollback the session
+# session.commit()
 
 
 # raw

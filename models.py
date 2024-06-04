@@ -1,7 +1,7 @@
 from typing import List
 from typing import Optional
 from sqlalchemy import Column, ForeignKey
-from sqlalchemy import String
+from sqlalchemy import String, Integer
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -34,3 +34,10 @@ class Address(Base):
 
     def __repr__(self) -> str:
         return f"Address(id={self.id!r}, email_address={self.email_address!r})"
+
+
+class CsvImportTest(Base):
+    __tablename__ = "csv_import_test"
+    pk: Mapped[int] = mapped_column(primary_key=True)
+    data = Column(String(16))
+    data2 = Column(Integer())
